@@ -1,6 +1,8 @@
 Basscss Javascript Date Picker
 ==============================
 
+![Basscss Date Picker](https://s3.amazonaws.com/f.cl.ly/items/3y2D03093e4532380q2e/Image%202015-10-03%20at%2006.37.23.png)
+
 Fork of the original Javascript Date Picker by [Chris Hulbert](https://github.com/chrishulbert) to suit my needs:
 
 - Activated when input got focus
