@@ -1,3 +1,14 @@
+Basscss Javascript Date Picker
+==============================
+
+Fork of the original Javascript Date Picker by [Chris Hulbert](https://github.com/chrishulbert) to suit my needs:
+
+- Activated when input got focus
+- Removed when click event fired outside
+- Input is disabled when the date picker created
+- No need for icon to trigger
+- Minor CSS fix
+
 Javascript Date Picker
 ======================
 
