@@ -1,18 +1,13 @@
-// Converts a date into '12-Oct-1984' format
+// Converts a date into '12-10-1984' format
 function getDateString(dt) {
-  //return dt.getDate() + '-' + 
-  //  ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][dt.getMonth()] + 
-  //  '-' + dt.getFullYear();
   var dd = dt.getDate();
   if (dt.getDate() < 10) dd = '0' + dt.getDate();
   return dd + '-' + ['01','02','03','04','05','06','07','08','09','10','11','12'][dt.getMonth()] + '-' + dt.getFullYear();
 }
 
-// Converts a date into 'July 2010' format
+// Converts a date into 'Des 2010' (Bahasa Indonesia) format
 function getMonthYearString(dt) {
-  return ['January','February','March','April','May','June','July',
-          'August','September','October','November','December'][dt.getMonth()] +
-         ' ' + dt.getFullYear();
+  return ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des'][dt.getMonth()] + ' ' + dt.getFullYear();
 }
 
 // This is the function called when the user clicks any button
@@ -26,6 +21,7 @@ function chooseDate(e) {
   var div = targ.parentNode.parentNode.parentNode.parentNode.parentNode; // Find the div
   var idOfTextbox = div.getAttribute('datepickertextbox'); // Get the textbox id which was saved in the div
   var textbox = document.getElementById(idOfTextbox); // Find the textbox now
+  textbox.removeAttribute('disabled'); // Make it active again
   if (targ.value=='<' || targ.value=='>' || targ.value=='<<' || targ.value=='>>') { // Do they want the change the month?
     createCalendar(div, new Date(targ.getAttribute('date')));
     return;
@@ -40,18 +36,18 @@ function parseMyDate(d) {
   var a = d.split('-');
   if (a.length!=3) return new Date(d); // Missing 2 dashes
   var m = -1; // Now find the month
-  if (a[1]=='Jan') m=0;
-  if (a[1]=='Feb') m=1;
-  if (a[1]=='Mar') m=2;
-  if (a[1]=='Apr') m=3;
-  if (a[1]=='May') m=4;
-  if (a[1]=='Jun') m=5;
-  if (a[1]=='Jul') m=6;
-  if (a[1]=='Aug') m=7;
-  if (a[1]=='Sep') m=8;
-  if (a[1]=='Oct') m=9;
-  if (a[1]=='Nov') m=10;
-  if (a[1]=='Dec') m=11;
+  if (a[1]=='Jan'||a[1]=='01') m=0;
+  if (a[1]=='Feb'||a[1]=='02') m=1;
+  if (a[1]=='Mar'||a[1]=='03') m=2;
+  if (a[1]=='Apr'||a[1]=='04') m=3;
+  if (a[1]=='May'||a[1]=='05') m=4;
+  if (a[1]=='Jun'||a[1]=='06') m=5;
+  if (a[1]=='Jul'||a[1]=='07') m=6;
+  if (a[1]=='Aug'||a[1]=='08') m=7;
+  if (a[1]=='Sep'||a[1]=='09') m=8;
+  if (a[1]=='Oct'||a[1]=='10') m=9;
+  if (a[1]=='Nov'||a[1]=='11') m=10;
+  if (a[1]=='Dec'||a[1]=='12') m=11;
   if (m<0) return new Date(d); // Couldn't find the month
   return new Date(a[2],m,a[0],0,0,0,0);
 }
@@ -82,7 +78,7 @@ function createCalendar(div, month) {
   mon.type='text';
   td.appendChild(mon);
   mon.value = getMonthYearString(month);
-  mon.size=15;
+  mon.size=8; // 15
   mon.disabled='disabled';
   mon.className='monthDsp';
   var td = topRow.insertCell(-1);
@@ -100,13 +96,13 @@ function createCalendar(div, month) {
   nextYearBn.onclick=chooseDate;
   nextYearBn.setAttribute('date',new Date(month.getFullYear(),month.getMonth()+12,1,0,0,0,0).toString());  
   var daysRow = tbl.insertRow(-1);
-  daysRow.insertCell(-1).innerHTML="Mon";  
-  daysRow.insertCell(-1).innerHTML="Tue";
-  daysRow.insertCell(-1).innerHTML="Wed";
-  daysRow.insertCell(-1).innerHTML="Thu";
-  daysRow.insertCell(-1).innerHTML="Fri";
-  daysRow.insertCell(-1).innerHTML="Sat";
-  daysRow.insertCell(-1).innerHTML="Sun";
+  daysRow.insertCell(-1).innerHTML="Sen"; // Mon
+  daysRow.insertCell(-1).innerHTML="Sel"; // Tue
+  daysRow.insertCell(-1).innerHTML="Rab"; // Wed
+  daysRow.insertCell(-1).innerHTML="Kam"; // The
+  daysRow.insertCell(-1).innerHTML="Jum"; // Fri
+  daysRow.insertCell(-1).innerHTML="Sab"; // Sat
+  daysRow.insertCell(-1).innerHTML="Min"; // Sun
   daysRow.className='daysRow';  
   // Make the calendar
   var selected = parseMyDate(textbox.value); // Try parsing the date
@@ -172,9 +168,16 @@ function showDatePicker(idOfTextbox) {
   // Create the box
   var div = document.createElement('div');
   div.className='datepickerdropdown';
+  // Create unique id for the div
+  var curdate = new Date();
+  var div_id = 'DT'+curdate.getTime();
+  div.id = div_id;
   div.setAttribute('datepickertextbox', idOfTextbox); // Remember the textbox id in the div
   createCalendar(div, date); // Create the calendar
   insertAfter(div, textbox); // Add the box to screen just after the textbox
+  
+  document.getElementById(div_id).onclick = function(event) {event.stopPropagation();} // Stop propagation
+  document.getElementById(idOfTextbox).setAttribute('disabled', true); // Textbox is now disabled
   return false;
 }
 
@@ -187,6 +190,16 @@ function insertAfter(newItem, existingItem) {
   }
 }
 
+// 
+function hideDatePicker() {
+   var els = document.getElementsByClassName('datepickerdropdown');
+   for (i=0; i<els.length; i++) els[i].remove();
+   
+   els = document.getElementsByClassName('datepicker');
+   for (i=0; i<els.length; i++) els[i].removeAttribute('disabled');
+}
+
+
 /*
  * onDOMReady
  * Copyright (c) 2009 Ryan Morr (ryanmorr.com)
@@ -196,21 +209,26 @@ function onDOMReady(fn,ctx){var ready,timer;var onStateChange=function(e){if(e&&
 
 // This is called when the page loads, it searches for inputs where the class is 'datepicker'
 onDOMReady(function(){
+  // ss
+  document.body.onclick = function(event) {
+    var className = event.srcElement.className;
+    if (className=='datepicker' || className.indexOf('datepicker ') != -1 || className.indexOf(' datepicker') != -1) {
+         event.stopPropagation();
+    }
+    else {
+      if (className=='datepickershow') return;
+      hideDatePicker();
+    }
+  }
+   
+   
   // Search for elements by class
   var allElements = document.getElementsByTagName("*");
   for (i=0; i<allElements.length; i++) {
     var className = allElements[i].className;
     if (className=='datepicker' || className.indexOf('datepicker ') != -1 || className.indexOf(' datepicker') != -1) {
-      // Found one! Now lets add a datepicker next to it  
-      var a = document.createElement('a');
-      a.href='#';
-      a.className="datepickershow";
-      a.setAttribute('onclick','return showDatePicker("' + allElements[i].id + '")');
-      var img = document.createElement('img');
-      img.src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAABGdBTUEAAK/INwWK6QAAABh0RVh0U29mdHdhcmUAUGFpbnQuTkVUIHYzLjM2qefiJQAAAdtJREFUOE+Vj+9PUnEUxvPvar3xja96Q1hGEKG0ubZqbfHCNqIVA4eYLAwFp0LYD4iIJEdeRGGZwDAEcUOn9oNIvPcGgjBQfHE69/YFihe1zs59du7d83nOuR0AcOq/CgEqWbaHDqaD+clF1rLAmija6MsZ5vb0s9nB1xm168s9x67y6Y7q2TaXjo8tVKjUTv7Zt61pAkwt/UA3zFwFuxysV2BKAuYeMAnBcBaGukDdCaozaLg5sUGAiQDLA3IIDIBfAfO34N118PaDRwYvRfBcCMrTaLg2liTAOEW3NjzpBZsMpqUwKQaLCMYvwGMhjArQIDfGCTDqy3EAX47lfVTnCo3qCnOzJ8IpW6pJR2IEGHn7/bBaR5MLO8y8CtPuKO2J0nMfGdKr+5uZ4kVdhAD6N99K1bo7ynB5vHpj3AZ0NxWBbs0KAbTur8VKfTbGeFcbkc1sfnBHuA1CzTIB7js/H5SPffFW3q9sau2PDdLhxkl3X+wiQCVYf4Jt3h1Itmb8iBvEusZJd2a2CuXjxXUWU5dSnAZ5/b0QkOobgMKWzh8eMcXaXr6aYSqfcuXtbAkdbS3RfSD/MGDfvGFO9ZuSfY/ilx/GLumi57Vhgfp9W597ECJA2/a/v/4ENLpYKsDo3kgAAAAASUVORK5CYII=';
-      img.title='Show calendar';
-      a.appendChild(img);
-      insertAfter(a, allElements[i]);
+      // Found one!
+      allElements[i].setAttribute('onfocus','hideDatePicker(); return showDatePicker("' + allElements[i].id + '")');
     }
   }
 });
